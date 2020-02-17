@@ -1,0 +1,51 @@
+
+
+Configurations:
+---------------
+A json file with running configurations must exist next to the script or executable.
+Such configuration file must be named: "configs.json"
+The configurations are:
+- hostname: the hostname where the SAST manager being instrumented is running
+            must be a server responding to REST calls
+			can be http or https formated (self signed certificates are accepted)
+			a port, if other than standard, can be include.
+			example: http://localhost:80
+- username: the user used to connect to the SAST with proper authorizations
+            usually a service user
+- password:	the password for the user above
+- promport: the port the service exposes to prometheus
+			do not forget your firewalls
+- loglevel: the level of information written to the logfile			
+			options are:
+				50 = CRITICAL/FATAL
+				40 = ERROR
+				30 = WARNING
+				20 = INFO
+				10 = DEBUG
+				 0 = NOTSET (logs nothing)			
+			default is 20 (INFO)
+             
+Example of a configurations file:
+{	
+	"hostname": "https://localhost:443",
+    "username": "myservice",
+    "password": "mypassword",
+    "promport": 9700,
+	"loglevel": 40
+}
+
+
+Location of logfile:
+-------------------
+Log file is located at the folder "logs" relative to the running path.
+The logfile name is "cxprometheus.log"
+
+
+Creating an executable file from the python script:
+---------------------------------------------------
+1. Install the tool "pyinstaller" using "pip install pyinstaller"
+2. Execute the command "pyinstaller --onefile cxprometheus.py"
+The executable will be placed on ./dist folder
+This is valuable for Windows and for Linux
+
+

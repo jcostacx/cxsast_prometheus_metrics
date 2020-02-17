@@ -1,0 +1,7 @@
+{
+    "hostname": "http://joaonc-laptop.dm.cx",
+    "username": "service",
+    "password": "dev1@Applications",
+    "promport": 9700,
+	"loglevel": 20
+}
