@@ -293,11 +293,6 @@ def loadconfigurations():
         os.mkdir('logs')
     logfilename = 'logs' + os.path.sep + _logfile
 
-
-#    logging.basicConfig( filename = "", format = "", level = 0 )
-#    logging.getLogger()
-    
-
     # Init log file and format
     logger = logging.getLogger('cxprometheus')
     #logger.setLevel(logging.INFO)
@@ -413,6 +408,15 @@ class CxCollector(object):
                     iengine[6] = scanid
                     iengine[7] = scanstatus
                     break
+
+    def processdatestring( self, thedate ):
+        if (type(thedate) == str):
+            if ( "." in thedate ):
+                return thedate
+            else:
+                return thedate + ".0"
+        else:
+            return thedate
 
     def describe(self):
         logger = logging.getLogger('cxprometheus')
@@ -587,7 +591,7 @@ class CxCollector(object):
             # 1=New, 2=PreScan, 3=Queued, 4=Scanning, 6=PostScan, 7=Finished, 8=Canceled, 9=Failed, 10=SourcePullingAndDeployment or 1001=None. 
             # Resolve duration according to statuses
             val_time        = float(0.0)
-            scannew = datetime.datetime.strptime( scan["dateCreated"], "%Y-%m-%dT%H:%M:%S.%f" ).timestamp()
+            scannew = datetime.datetime.strptime( self.processdatestring(scan["dateCreated"]), "%Y-%m-%dT%H:%M:%S.%f" ).timestamp()
             scannow = time.time()
             # The global metrics
             if (scanstatusid == 10) or (scanstatusid >= 1 and scanstatusid <= 6): # Full
@@ -599,7 +603,7 @@ class CxCollector(object):
                 metric2.add_metric( [ str(scanid), scanengineid, scanenginename, scanenginelocmin, scanenginelocmax ], val_time )
             elif (scanstatusid == 3):                           # Queued
                 try:
-                    scanini = datetime.datetime.strptime( scan["queuedOn"], "%Y-%m-%dT%H:%M:%S.%f" ).timestamp()
+                    scanini = datetime.datetime.strptime( self.processdatestring(scan["queuedOn"]), "%Y-%m-%dT%H:%M:%S.%f" ).timestamp()
                 except:
                     scanini = 0.0
                 if (scanini > 0.0):
@@ -607,12 +611,12 @@ class CxCollector(object):
                     metric3.add_metric( [ str(scanid), scanengineid, scanenginename, scanenginelocmin, scanenginelocmax ], val_time )
             elif (scanstatusid >= 4) and (scanstatusid <= 6):   # Scanning
                 try:
-                    scanini = datetime.datetime.strptime( scan["engineStartedOn"], "%Y-%m-%dT%H:%M:%S.%f" ).timestamp()
+                    scanini = datetime.datetime.strptime( self.processdatestring(scan["engineStartedOn"]), "%Y-%m-%dT%H:%M:%S.%f" ).timestamp()
                 except:
                     scanini = 0.0
                 if (scanini > 0.0):
                     try:
-                        scanend = datetime.datetime.strptime( scan["completedOn"], "%Y-%m-%dT%H:%M:%S.%f" ).timestamp()
+                        scanend = datetime.datetime.strptime( self.processdatestring(scan["completedOn"]), "%Y-%m-%dT%H:%M:%S.%f" ).timestamp()
                     except:
                         scanend = scannow
                     val_time = ( scanend - scanini ) / 60
@@ -625,8 +629,6 @@ class CxCollector(object):
         yield metric4
         yield metric5
 
-        
-        
 
 if __name__ == '__main__':
 
