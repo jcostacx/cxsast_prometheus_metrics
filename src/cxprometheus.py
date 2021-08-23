@@ -35,7 +35,7 @@ __author__          = "Joao Costa"
 __version__         = "1.0.0"
 __date__            = "February 2020"
 __maintainer__      = "Joao Costa"
-__email__           = "joao.costa@checmarx.com"
+__email__           = "joao.costa@checkmarx.com"
 __status__          = "Production"
 
 
